@@ -1,16 +1,19 @@
-version: '3.8'
-
+version: '2.0'
 services:
-  backend:
-    build: ./backend/
-    ports:
-      - "8080:8080"  
-    restart: always
-    depends_on:
-      - frontend
-
   frontend:
-    build: ./frontend
+    image: front
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+      args:
+        - IP=${IP}
     ports:
-      - "8081:3000"
-    restart: always
+      - 8081:3000
+  backend:
+    image: back
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+      

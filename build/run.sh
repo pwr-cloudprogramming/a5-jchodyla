@@ -1,2 +1,3 @@
 #!/bin/bash
-echo "This script should start your application"
+export IP=localhost
+docker compose up --build

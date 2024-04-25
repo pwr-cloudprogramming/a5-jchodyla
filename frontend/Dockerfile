@@ -1,5 +1,5 @@
 FROM busybox:1.35
-ARG ip
+ARG IP=$IP
 
 RUN adduser -D stud
 USER stud
@@ -7,8 +7,8 @@ WORKDIR /home/stud
 
 COPY src/ .
 
-EXPOSE 3000
-RUN sed -i "s/localhost/$ip/g" index.html
+RUN sed -i "s/localhost/$IP/g" index.html && \
+    sed -i "s/localhost/$IP/g" board.js
 
 ENTRYPOINT ["busybox"]
 CMD ["httpd", "-f", "-v", "-p", "3000"]
