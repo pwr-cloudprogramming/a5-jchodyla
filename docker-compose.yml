@@ -14,6 +14,8 @@ services:
     build:
       context: backend
       dockerfile: Dockerfile
+    args:
+        - IP=${IP}
     ports:
       - 8080:8080
       
