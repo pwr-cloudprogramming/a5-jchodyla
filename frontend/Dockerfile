@@ -1,5 +1,5 @@
 FROM busybox:1.35
-ARG IP=$IP
+ARG IP=$IP_V4
 
 RUN adduser -D stud
 USER stud

@@ -6,7 +6,7 @@ services:
       context: frontend
       dockerfile: Dockerfile
       args:
-        - IP=localhost
+        - IP=IP
     ports:
       - 8081:3000
   backend:
