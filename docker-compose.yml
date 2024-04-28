@@ -1,6 +1,7 @@
 version: '2.0'
 services:
   frontend:
+    image: myfront
     build:
       context: frontend
       dockerfile: Dockerfile
@@ -9,6 +10,7 @@ services:
     ports:
       - 8081:3000
   backend:
+    image: myback
     build:
       context: backend
       dockerfile: Dockerfile
