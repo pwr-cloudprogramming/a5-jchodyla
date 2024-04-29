@@ -1,5 +1,5 @@
 FROM busybox:1.35
-ARG IP
+ARG IP=localhost
 
 RUN adduser -D stud
 USER stud
