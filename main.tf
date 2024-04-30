@@ -75,12 +75,22 @@ resource "aws_instance" "my_instance" {
 
 user_data = <<-EOF
               #!/bin/bash
-              AZONE=$(curl -s http://169.254.169.254/latest/meta-data/placement/availability-zone)
-              IP_V4=$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4)
-              SUBNET_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/ | head -n1)/subnet-id)
-              VPC_ID=$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/$(curl -s http://169.254.169.254/latest/meta-data/network/interfaces/macs/ | head -n1)/vpc-id)
+               #sudo apt update -y
+               #sudo apt install -y docker.io
+               #service docker start
               
-              echo "Your EC2 instance works in :AvailabilityZone: $AZONE / VPC: $VPC_ID / VPC subnet: $SUBNET_ID / IP address: $IP_V4"
+              # Retrieve IP address using metadata script
+              API_URL="http://169.254.169.254/latest/api"
+              TOKEN=$(curl -X PUT "$API_URL/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 600")
+              TOKEN_HEADER="X-aws-ec2-metadata-token: $TOKEN"
+              METADATA_URL="http://169.254.169.254/latest/meta-data"
+              AZONE=$(curl -H "$TOKEN_HEADER" -s $METADATA_URL/placement/availability-zone)
+              IP_V4=$(curl -H "$TOKEN_HEADER" -s $METADATA_URL/public-ipv4)
+              INTERFACE=$(curl -H "$TOKEN_HEADER" -s $METADATA_URL/network/interfaces/macs/ | head -n1)
+              SUBNET_ID=$(curl -H "$TOKEN_HEADER" -s $METADATA_URL/network/interfaces/macs/$INTERFACE/subnet-id)
+              VPC_ID=$(curl -H "$TOKEN_HEADER" -s $METADATA_URL/network/interfaces/macs/$INTERFACE/vpc-id)
+
+              echo "Your EC2 instance works in: AvailabilityZone: $AZONE, VPC: $VPC_ID, VPC subnet: $SUBNET_ID, IP address: $IP_V4"
               
               echo "$IP_V4" > /tmp/ec2_ip_address.txt
               
@@ -99,8 +109,8 @@ user_data = <<-EOF
               sudo chmod +x /usr/bin/docker-compose
 
               cd a5-jchodyla
-
-              docker-compose build --build-arg ip="$IP_V4" --no-cache
+			
+              docker-compose build --build-arg IP="$IP_V4" --no-cache
 
               docker-compose up -d
           EOF
