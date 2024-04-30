@@ -7,7 +7,7 @@
 ## Environment architecture
 
 Frontend - configured on port 8081, developed with `html/css/js`\
-Backend - configured on port 8080, developed with `python` using `flask`\
+Backend - configured on port 8080, developed with `python` using `flask`
 
 Application can be run using Docker by command `docker-compose up -d`
 
